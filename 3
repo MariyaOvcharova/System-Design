@@ -1,0 +1,99 @@
+import time
+import random
+import threading
+
+class RaftNode:
+    def __init__(self, node_id):
+        self.node_id = node_id  
+        self.state = "follower"
+        self.leader_id = None  
+        self.log = []  
+        self.json_data = {}  
+        self.election_timeout = random.randint(5, 10)  
+        self.running = True  
+
+    def start_election(self):
+        print(f"Node {self.node_id} starts election")
+        self.state = "candidate"
+        votes = 1  
+
+        for _ in range(4):  
+            if random.random() > 0.5:  
+                votes += 1
+
+        if votes > 2:  
+            print(f"Node {self.node_id} became leader!")
+            self.state = "leader"
+            self.leader_id = self.node_id
+        else:
+            print(f"Node {self.node_id} lost the election")
+            self.state = "follower"
+
+    def send_heartbeat(self):
+        while self.state == "leader" and self.running:
+            print(f"Leader {self.node_id} sends heartbeat")
+            time.sleep(3)  
+
+    def update_json(self, key, value):
+        if self.state != "leader":
+            print(f"Node {self.node_id}: cannot update JSON, not the leader")
+            return
+        print(f"Leader {self.node_id} updates JSON: {key} = {value}")
+        self.json_data[key] = value
+        self.log.append((key, value))
+
+    def run(self):
+        while self.running:
+            time.sleep(self.election_timeout)  
+            if self.state != "leader":  
+                if self.leader_id is None:  
+                    self.start_election()
+
+    def stop(self):  
+        self.running = False  
+
+nodes = [RaftNode(i) for i in range(5)]
+threads = [threading.Thread(target=node.run) for node in nodes]
+
+for thread in threads:
+    thread.start()
+
+leader = None
+
+while True:
+    command = input("Enter command (show / exit / start (set key value)): ").strip().split()
+
+    if not command:
+        continue
+
+    if command[0] == "start":
+        print("System started")
+        continue  
+
+    if command[0] == "exit":
+        print("Exit...")
+        for node in nodes:
+            node.stop()  
+        for thread in threads:
+            thread.join() 
+        print("Exit")
+        break  
+
+    if command[0] == "set" and len(command) == 3:
+        key, value = command[1], command[2]
+        for node in nodes:
+            if node.state == "leader":
+                leader = node
+                break
+        if leader:
+            leader.update_json(key, value)
+        else:
+            print("Request failed because of no leader")
+
+    elif command[0] == "show":
+        if leader:
+            print("Current JSON:", leader.json_data)
+        else:
+            print("No data setted ;(")
+            
+/ at forst program chose the leader node, after that you may add data use set _key_ _value_ command, see your data by show and exit (start is starting the process of choosing the leader node)
