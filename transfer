@@ -1,0 +1,56 @@
+import psycopg2
+from concurrent.futures import ThreadPoolExecutor
+
+recomendation = {
+    'host': 'localhost',
+    'dbname': 'postgres',
+    'user': 'postgres',
+    'password': '1234'
+}
+
+recomendation_new = {
+    'host': 'localhost',
+    'dbname': 'target_db',  
+    'user': 'postgres',
+    'password': '1234'
+}
+
+def create_target_table():
+    
+    with psycopg2.connect(**recomendation_new) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS recommendation (
+                    user_id INT,
+                    product_id INT
+                )
+            """)
+
+def copy_chunk(chunk):
+    with psycopg2.connect(**recomendation_new) as conn:
+        with conn.cursor() as cur:
+            args = ','.join(cur.mogrify("(%s,%s)", x).decode() for x in chunk)
+            cur.execute(f"INSERT INTO recommendation (user_id, product_id) VALUES {args}")
+            conn.commit()
+
+def main():
+    create_target_table()
+    with psycopg2.connect(**recomendation) as src_conn:
+        with src_conn.cursor() as src_cur:
+            src_cur.execute("SELECT user_id, product_id FROM recommendation")
+            all = src_cur.fetchall()
+            
+            # like example to 4
+            chunk_size = len(all) // 4 
+            chunks = [all[i:i+chunk_size] for i in range(0, len(all), chunk_size)]
+            
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                executor.map(copy_chunk, chunks)
+            
+            src_cur.execute("DELETE FROM recommendation WHERE ctid NOT IN (SELECT ctid FROM recommendation ORDER BY ctid DESC LIMIT 1000)")
+            src_conn.commit()
+    
+    print("all done")
+
+if __name__ == "__main__":
+    main()
