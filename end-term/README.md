@@ -7,11 +7,11 @@ Leaky Bucket algorithm for smooth load distribution
 Configurable limit settings
 Support for GET/POST requests
 
-### Требования:
+### Requirements:
 - Python 3.8+
 - Flask
 
-1. Установите зависимости:
+1. Install the dependencies:
    ```bash
    pip install flask
 
