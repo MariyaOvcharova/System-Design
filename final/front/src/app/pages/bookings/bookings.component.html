@@ -1,25 +1,25 @@
 <div class="container mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold text-gray-800 mb-8">Мои бронирования</h1>
-    <div *ngIf="loading" class="text-center py-8 text-gray-600">Загрузка...</div>
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">My booking</h1>
+    <div *ngIf="loading" class="text-center py-8 text-gray-600">Loading...</div>
     <div *ngIf="!loading">
       <div *ngIf="bookings.length; else noBookings" class="space-y-6">
         <div *ngFor="let booking of bookings" class="bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-lg transition-shadow duration-300">
           <div>
             <h2 class="text-lg font-semibold text-gray-800">{{ booking.tour.name }}</h2>
-            <p class="text-gray-600 text-sm mt-1">Дата бронирования: {{ booking.booking_date | date }}</p>
+            <p class="text-gray-600 text-sm mt-1">Booking date: {{ booking.booking_date | date }}</p>
             <p class="text-gray-600 text-sm mt-1">Статус: {{ booking.status }}</p>
-            <a [routerLink]="['/booking', booking.id]" class="text-orange-500 hover:text-orange-600 font-medium transition duration-300 mt-2 inline-block">Подробнее</a>
+            <a [routerLink]="['/booking', booking.id]" class="text-orange-500 hover:text-orange-600 font-medium transition duration-300 mt-2 inline-block">More detailed</a>
           </div>
           <button
             (click)="deleteBooking(booking.id)"
             class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-full font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition duration-300"
           >
-            Удалить
+            Delete
           </button>
         </div>
       </div>
       <ng-template #noBookings>
-        <p class="text-gray-600 text-center py-8">Бронирований не найдено.</p>
+        <p class="text-gray-600 text-center py-8">No bookings found.</p>
       </ng-template>
     </div>
   </div>
