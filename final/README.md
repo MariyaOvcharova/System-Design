@@ -1,41 +1,6 @@
 
 # Travel Booking Platform
 
-## System Overview
-Platform for booking tours with:
-- High load support (Black Friday, holidays)
-- Multimedia content (tour photos via AWS S3)
-- JWT authentication and booking system
-
-## Functional Requirements
-
-| Requirement                  | Implementation Details |
-|------------------------------|-----------------------|
-| **User Registration**        | Django `RegisterSerializer` + JWT. Rate-limited by Flask LB (2 req/sec per IP). |
-| **Tour Management**          | CRUD via `TourSerializer`, photos stored in AWS S3. |
-| **Booking System**           | Unique bookings enforced by `UniqueConstraint` in `Booking` model. |
-| **Reviews & Ratings**        | Auto-updated tour ratings via `update_rating()`. |
-| **Admin Portal**             | Django Admin + `drf-spectacular` docs. |
-
-## Non-Functional Requirements
-
-| Requirement                  | Implementation |
-|------------------------------|----------------|
-| **Availability 99.9%**       | Docker + Nginx |
-| **Security**                 | HTTPS, JWT, Django ORM SQL injection protection |
-| **Scalability**              | Flask load balancer + horizontal scaling |
-| **API Response <1s**         | Optimized queries (`prefetch_related`) |
-
-## Business Metrics
-
-| Metric                      | Target       | Implementation |
-|-----------------------------|--------------|----------------|
-| Registered Users            | 10M+         | PostgreSQL sharding |
-| Peak Bookings/Day           | >1M          | Redis caching |
-| Fraud Prevention Rate       | -80%         | Unique booking constraints |
-
-## Technology Stack
-
 ### Frontend (Angular)
 - **Why Angular?**
   - Full-featured framework for complex SPAs
