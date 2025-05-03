@@ -1,0 +1,98 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django stuff
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static/
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.cover
+.coverage
+*.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.mo
+
+# Ignore settings for security
+.env
+*.env
+.envrc
+config.ini
+*.pem
+secrets.json
+
+# Ignore JetBrains IDE
+.idea/
+.vscode/
+*.iml
+
+# Ignore Docker artifacts
+docker-compose.override.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
+docker/data/
+docker/logs/
+docker/*.log
+
+# Ignore Python packaging artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+*.manifest
+*.spec
+
+# Ignore mypy, pytest, and coverage reports
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ignore Ruff cache
+.ruff_cache/
+
+# Ignore pre-commit hooks
+.pre-commit-config.yaml
+.pre-commit-hooks.yaml
+
+# Ignore temporary files
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Ignore logs and debug files
+logs/
+*.log
+debug.log
+error.log
+nohup.out
+traceback.log
+
+# Ignore compiled C extensions
+*.so
+
+# Ignore lockfiles
+Pipfile.lock
+poetry.lock

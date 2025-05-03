@@ -1,0 +1,14 @@
+@import "tailwindcss";
+a {
+    text-decoration: none !important; 
+    color: inherit !important; 
+}
+  
+nav a {
+    text-decoration: none !important;
+    color: #4b5563; 
+}
+  
+nav a:hover {
+    color: #f97316; 
+}

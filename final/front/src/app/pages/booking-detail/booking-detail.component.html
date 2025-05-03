@@ -1,0 +1,25 @@
+<div class="container mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Детали бронирования</h1>
+    <div *ngIf="loading" class="text-center py-8 text-gray-600">Загрузка...</div>
+    <div *ngIf="!loading && booking" class="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">{{ booking.tour.name }}</h2>
+      <p class="text-gray-600 text-sm mb-2">Дата бронирования: {{ booking.booking_date | date }}</p>
+      <p class="text-gray-600 text-sm mb-6">Статус: {{ booking.status }}</p>
+      <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <button
+          (click)="updateStatus('confirmed')"
+          class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-2.5 rounded-full font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition duration-300"
+          [disabled]="booking.status === 'confirmed'"
+        >
+          Подтвердить
+        </button>
+        <button
+          (click)="updateStatus('canceled')"
+          class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-2.5 rounded-full font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition duration-300"
+          [disabled]="booking.status === 'canceled'"
+        >
+          Отменить
+        </button>
+      </div>
+    </div>
+  </div>
