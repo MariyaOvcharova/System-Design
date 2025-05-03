@@ -166,7 +166,8 @@ HTTP Status Codes Overview:
 
 │ Status  │ Scenario                  │ Resolution Path                            │
 ├---------|---------------------------|--------------------------------------------┤
-│ 400     │ Invalid request data      │ Check request body/parameters format       │
+│ 400 │ Invalid request data │ Check request body/parameters format │
+
 │         │ (validation errors)       │ Example: { "error": "Email is required" }  │
 │ 401     │ Missing/expired JWT       │ 1. Redirect to /login                      │
 │         │                           │ 2. Auto-refresh token via /token/refresh   │
