@@ -54,86 +54,6 @@ Platform for booking tours with:
   - Leaky Bucket algorithm (2 req/sec)
   - Health checks and request proxying
 
-## Database Architecture
-
-PostgreSQL Schema:
-auth_user → bookings
-         → reviews
-tours → photo_urls (JSON) → AWS S3`
-
-## Docker Setup
-
-dockerfile
-version: '3.8'
-
-services:
-  ### NGINX as reverse proxy
-  nginx:
-    image: nginx:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./ssl:/etc/ssl
-    depends_on:
-      - flask-lb
-      - django 
-
-  ### Flask Load Balancer
-  flask-lb:
-    build: ./load_balancer
-    ports:
-      - "5000:5000"
-    environment:
-      - BUCKET_CAPACITY=2
-      - LEAK_RATE=1.0
-    depends_on:
-      - django
-
-  ### Django Backend
-  django:
-    build: ./backend
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 4
-    volumes:
-      - ./backend:/app
-    environment:
-      - DB_HOST=postgres
-      - DB_NAME=travel
-      - DB_USER=admin
-      - DB_PASS=securepassword
-    depends_on:
-      - postgres
-      - redis
-
-  ### PostgreSQL Database
-  postgres:
-    image: postgres:14
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: travel
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: securepassword
-
-  ### Redis for caching
-  redis:
-    image: redis:6
-    ports:
-      - "6379:6379"
-
-  ### Celery for async tasks
-  celery:
-    build: ./backend
-    command: celery -A core worker --loglevel=info
-    depends_on:
-      - django
-      - redis
-
-volumes:
-  pg_data:
-
-
 ### Database Architecture
 
 PostgreSQL Schema:
@@ -162,23 +82,14 @@ Key Tables:
 
 ## Error Handling
 
-HTTP Status Codes Overview:
-
-│ Status  │ Scenario                  │ Resolution Path                            │
-├---------|---------------------------|--------------------------------------------┤
-│ 400 │ Invalid request data │ Check request body/parameters format │
-
-│         │ (validation errors)       │ Example: { "error": "Email is required" }  │
-│ 401     │ Missing/expired JWT       │ 1. Redirect to /login                      │
-│         │                           │ 2. Auto-refresh token via /token/refresh   │
-│ 403     │ Forbidden action          │ Check user permissions                     │
-│         │ (e.g., admin-only area)   │ Example: { "detail": "Permission denied" } │
-│ 404     │ Resource not found        │ 1. Verify UUID exists                      │
-│         │                           │ 2. Check URL endpoint                      │
-│ 429     │ Rate limit exceeded       │ 1. Wait for next available request         │
-│         │ (Flask LB protection)     │ 2. Check Retry-After header                │
-│ 500     │ Server error              │ 1. Check Django logs                       │
-│         │                           │ 2. Verify database connection              │
+| Status Code | Scenario                  | Resolution Path                            |
+|-------------|---------------------------|--------------------------------------------|
+| **400**     | Invalid request data      | Check request body/parameters format. Example: `{ "error": "Email is required" }` |
+| **401**     | Missing/expired JWT       | 1. Redirect to `/login`<br>2. Auto-refresh token via `/token/refresh` |
+| **403**     | Forbidden action          | Check user permissions. Example: `{ "detail": "Permission denied" }` |
+| **404**     | Resource not found        | 1. Verify UUID exists<br>2. Check URL endpoint |
+| **429**     | Rate limit exceeded       | 1. Wait for next available request<br>2. Check `Retry-After` header |
+| **500**     | Server error              | 1. Check Django logs<br>2. Verify database connection |
 
 Common Error Responses:
 1. JWT Expired:
