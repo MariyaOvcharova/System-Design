@@ -163,27 +163,21 @@ Key Tables:
 ## Error Handling
 
 HTTP Status Codes Overview:
-┌─────────┬───────────────────────────┬─────────────────────────────────────────────┐
+
 │ Status  │ Scenario                  │ Resolution Path                            │
-├─────────┼───────────────────────────┼─────────────────────────────────────────────┤
+├---------|---------------------------|--------------------------------------------┤
 │ 400     │ Invalid request data      │ Check request body/parameters format       │
 │         │ (validation errors)       │ Example: { "error": "Email is required" }  │
-├─────────┼───────────────────────────┼─────────────────────────────────────────────┤
 │ 401     │ Missing/expired JWT       │ 1. Redirect to /login                      │
 │         │                           │ 2. Auto-refresh token via /token/refresh   │
-├─────────┼───────────────────────────┼─────────────────────────────────────────────┤
 │ 403     │ Forbidden action          │ Check user permissions                     │
 │         │ (e.g., admin-only area)   │ Example: { "detail": "Permission denied" } │
-├─────────┼───────────────────────────┼─────────────────────────────────────────────┤
 │ 404     │ Resource not found        │ 1. Verify UUID exists                      │
 │         │                           │ 2. Check URL endpoint                      │
-├─────────┼───────────────────────────┼─────────────────────────────────────────────┤
 │ 429     │ Rate limit exceeded       │ 1. Wait for next available request         │
 │         │ (Flask LB protection)     │ 2. Check Retry-After header                │
-├─────────┼───────────────────────────┼─────────────────────────────────────────────┤
 │ 500     │ Server error              │ 1. Check Django logs                       │
 │         │                           │ 2. Verify database connection              │
-└─────────┴───────────────────────────┴─────────────────────────────────────────────┘
 
 Common Error Responses:
 1. JWT Expired:
